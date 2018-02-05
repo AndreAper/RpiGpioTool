@@ -11,7 +11,11 @@
         <Pivot Title="Raspberry Pi GGPIO Tool">
             <PivotItem Header="Input" FontSize="12">
                 <Grid>
-                    <TextBlock x:Name="txtBlkBanana" HorizontalAlignment="Left" Margin="250,230,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="43*"/>
+                        <RowDefinition Height="631*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="0,13,0,0" VerticalAlignment="Top" Background="#FF303030" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00A2FF" Height="30" Width="220"/>
 
                 </Grid>
             </PivotItem>
@@ -29,7 +33,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="50*"/>
+                        <RowDefinition Height="167*"/>
                     </Grid.RowDefinitions>
 
                     <!--Select GPIO Row-->
@@ -41,15 +46,14 @@
                     <!--Output Functions Row-->
                     <TextBlock Margin="5,5,5,0" Grid.Row="2" Text="Output Functions" VerticalAlignment="Top" Height="20"/>
                     <ToggleSwitch x:Name="tglSwGpioLevel" Grid.Column="1" Header="GPIO Level" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" Margin="5,5,0,0" OffContent="Low" OnContent="High" RenderTransformOrigin="0.5,0.5" MinWidth="160" Height="60" Width="160" Toggled="tglSwGpioLevel_Toggled"/>
-                    <Button x:Name="btnGpioPushSwitch" Content="Push Switch" Grid.Column="2" HorizontalAlignment="Left" Margin="5,5,0,0" Grid.Row="2" VerticalAlignment="Top" Width="125" Background="#FF303030" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00A2FF" Height="30" PointerPressed="btnGpioPushSwitch_PointerPressed" PointerReleased="btnGpioPushSwitch_PointerReleased"/>
 
                     <!--Pulse Generator Row-->
                     <TextBlock Margin="5,5,5,0" Grid.Row="3" Text="Pulse Generator" VerticalAlignment="Top" Height="20"/>
                     <TextBox x:Name="tbxTLow" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,5,5,0" InputScope="Number" Header="TLow (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FFFF0051"/>
-                    <TextBox x:Name="tbxTHigh" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,70,5,5" InputScope="Number" Header="THigh (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00FF8B"/>
+                    <TextBox x:Name="tbxTHigh" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,70,5,0" InputScope="Number" Header="THigh (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00FF8B"/>
                     <Image Grid.Column="2" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="278" Source="Assets/pulse.png" Stretch="None" Grid.ColumnSpan="2"/>
                     <ToggleSwitch x:Name="tglSwPulseGenerator" Grid.Column="4" Header="Pulse Generator Task" HorizontalAlignment="Left" Margin="5,5,0,0" Grid.Row="3" VerticalAlignment="Top" OffContent="Disabled" OnContent="Enabled" Toggled="tglSwPulseGenerator_Toggled"/>
-                    <Rectangle x:Name="rectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Margin="33,20,0,0" Grid.Row="4" Stroke="Black" VerticalAlignment="Top" Width="100"/>
+                    <Rectangle x:Name="rectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Margin="33,20,0,0" Grid.Row="4" Stroke="Black" VerticalAlignment="Top" Width="100" Grid.RowSpan="2"/>
 
                 </Grid>
 

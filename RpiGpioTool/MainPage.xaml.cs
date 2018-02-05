@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.Gpio;
 using System.Threading.Tasks;
+using System.Threading;
 using Windows.UI.Core;
 
 // Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x407 dokumentiert.
@@ -28,7 +29,8 @@ namespace RpiGpioTool
         private GpioController _gpioController = null;
         private GpioPin[] _gpioPinList = null;
         private GpioPin _selectedPin = null;
-        private List<Task> _pulsGeneratorList = null;
+        private List<Task> _pulseGeneratorTasks = null;
+        private CancellationTokenSource _cancelationTokenSource = null;
 
         /// <summary>
         /// Initilizing the on board gpio controller.
@@ -120,7 +122,6 @@ namespace RpiGpioTool
             if (_selectedPin.GetDriveMode() == GpioPinDriveMode.Input || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullDown || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullUp)
             {
                 tglSwGpioLevel.IsEnabled = false;
-                btnGpioPushSwitch.IsEnabled = false;
                 tbxTLow.IsEnabled = false;
                 tbxTHigh.IsEnabled = false;
 
@@ -134,7 +135,6 @@ namespace RpiGpioTool
             else
             {
                 tglSwGpioLevel.IsEnabled = true;
-                btnGpioPushSwitch.IsEnabled = true;
                 tbxTLow.IsEnabled = true;
                 tbxTHigh.IsEnabled = true;
 
@@ -147,21 +147,36 @@ namespace RpiGpioTool
         }
 
         /// <summary>
-        /// A asynchronous pulse generator with specifiec low and high time. The Magic of await >>> DO NOT AWAIT THIS METRHOD!
+        /// A pulse generator with specifiec low and high time. THE MAGIC IS, DO NOT CALL THIS METHOD WITH AWAIT!
         /// </summary>
         /// <param name="tLow">The time of the low signal.</param>
         /// <param name="tHigh">The time of the high signal.</param>
         /// <returns></returns>
-        private async Task InfinitePulseAsync(int tLow, int tHigh)
+        private async Task RunInfinitePulseTask(int tLow, int tHigh)
         {
-            while (true)
-            {
-                _selectedPin.Write(GpioPinValue.Low);
-                await Task.Delay(tLow);
+            CancellationToken ct = _cancelationTokenSource.Token;
 
-                _selectedPin.Write(GpioPinValue.High);
-                await Task.Delay(tHigh);
-            }
+            Task t = Task.Factory.StartNew(async () => {
+
+                ct.ThrowIfCancellationRequested();
+
+                while (true)
+                {
+                    if (ct.IsCancellationRequested)
+                    {
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { rectangle.Visibility = Visibility.Visible; });
+                        ct.ThrowIfCancellationRequested();
+                    }
+
+                    //_selectedPin.Write(GpioPinValue.Low);
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { rectangle.Visibility = Visibility.Collapsed; });
+                    await Task.Delay(tLow);
+
+                    //_selectedPin.Write(GpioPinValue.High);
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { rectangle.Visibility = Visibility.Visible; });
+                    await Task.Delay(tHigh);
+                }
+            }, _cancelationTokenSource.Token);
         }
 
         public MainPage()
@@ -197,10 +212,11 @@ namespace RpiGpioTool
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            await InitializeGpio();
+            //await InitializeGpio();
             await InitializeUi();
 
-            _pulsGeneratorList = new List<Task>();
+            _pulseGeneratorTasks = new List<Task>();
+            _cancelationTokenSource = new CancellationTokenSource();
         }
 
         private async void btnSwitchDriveMode_Click(object sender, RoutedEventArgs e)
@@ -228,35 +244,24 @@ namespace RpiGpioTool
             }
         }
 
-        private void btnGpioPushSwitch_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            if (_selectedPin != null)
-            {
-                _selectedPin.Write(GpioPinValue.High);
-            }
-        }
-
-        private void btnGpioPushSwitch_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            if (_selectedPin != null)
-            {
-                _selectedPin.Write(GpioPinValue.Low);
-            }
-        }
-
         private async void tglSwPulseGenerator_Toggled(object sender, RoutedEventArgs e)
         {
-            if (_selectedPin != null)
+            if (tglSwPulseGenerator.IsOn)
             {
-                if (tglSwPulseGenerator.IsOn)
-                {
-                    int low = Int32.Parse(tbxTLow.Text);
-                    int high = Int32.Parse(tbxTHigh.Text);
-                }
-                else
-                {
-                }
+                int low = Int32.Parse(tbxTLow.Text);
+                int high = Int32.Parse(tbxTHigh.Text);
+
+                RunInfinitePulseTask(low, high);
             }
+            else
+            {
+                _cancelationTokenSource.Cancel();
+            }
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            _cancelationTokenSource.Cancel();
         }
     }
 }
