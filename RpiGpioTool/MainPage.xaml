@@ -49,6 +49,7 @@
                     <TextBox x:Name="tbxTHigh" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,70,5,5" InputScope="Number" Header="THigh (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00FF8B"/>
                     <Image Grid.Column="2" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="278" Source="Assets/pulse.png" Stretch="None" Grid.ColumnSpan="2"/>
                     <ToggleSwitch x:Name="tglSwPulseGenerator" Grid.Column="4" Header="Pulse Generator Task" HorizontalAlignment="Left" Margin="5,5,0,0" Grid.Row="3" VerticalAlignment="Top" OffContent="Disabled" OnContent="Enabled" Toggled="tglSwPulseGenerator_Toggled"/>
+                    <Rectangle x:Name="rectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Margin="33,20,0,0" Grid.Row="4" Stroke="Black" VerticalAlignment="Top" Width="100"/>
 
                 </Grid>
 

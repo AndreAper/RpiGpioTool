@@ -146,15 +146,21 @@ namespace RpiGpioTool
             }
         }
 
-        private void Pulse(int tLow, int tHigh)
+        /// <summary>
+        /// A asynchronous pulse generator with specifiec low and high time. The Magic of await >>> DO NOT AWAIT THIS METRHOD!
+        /// </summary>
+        /// <param name="tLow">The time of the low signal.</param>
+        /// <param name="tHigh">The time of the high signal.</param>
+        /// <returns></returns>
+        private async Task InfinitePulseAsync(int tLow, int tHigh)
         {
             while (true)
             {
                 _selectedPin.Write(GpioPinValue.Low);
-                Task.Delay(tLow);
+                await Task.Delay(tLow);
 
                 _selectedPin.Write(GpioPinValue.High);
-                Task.Delay(tHigh);
+                await Task.Delay(tHigh);
             }
         }
 
@@ -242,15 +248,10 @@ namespace RpiGpioTool
         {
             if (_selectedPin != null)
             {
-                Task pulseTask = null;
-
                 if (tglSwPulseGenerator.IsOn)
                 {
                     int low = Int32.Parse(tbxTLow.Text);
                     int high = Int32.Parse(tbxTHigh.Text);
-
-                    pulseTask = new Task(() => Pulse(low, high));
-                    pulseTask.Start();
                 }
                 else
                 {
