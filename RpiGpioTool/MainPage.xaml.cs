@@ -95,8 +95,6 @@ namespace RpiGpioTool
         /// <returns></returns>
         private async Task InitializeUi()
         {
-            tbxDriveModeMsg.Visibility = Visibility.Collapsed;
-
             lbxLogs.Items.Add("Begin initialize UI.");
             if (_gpioPinList != null)
             {
@@ -121,28 +119,23 @@ namespace RpiGpioTool
         {
             if (_selectedPin.GetDriveMode() == GpioPinDriveMode.Input || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullDown || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullUp)
             {
+                tglSwDriveMode.IsOn = false;
+
                 tglSwGpioLevel.IsEnabled = false;
                 tbxTLow.IsEnabled = false;
                 tbxTHigh.IsEnabled = false;
-
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                    tbxDriveModeMsg.Text = "The pin is currently not in output drive mode.";
-                    tbxDriveModeMsg.Visibility = Visibility.Visible;
-                });
-
-                btnSwitchDriveMode.Visibility = Visibility.Visible;
+                btnStartPulseGenerator.IsEnabled = false;
+                btnStopPulseGenerator.IsEnabled = false;
             }
             else
             {
+                tglSwDriveMode.IsOn = true;
+
                 tglSwGpioLevel.IsEnabled = true;
                 tbxTLow.IsEnabled = true;
                 tbxTHigh.IsEnabled = true;
-
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                    tbxDriveModeMsg.Visibility = Visibility.Collapsed;
-                });
-
-                btnSwitchDriveMode.Visibility = Visibility.Collapsed;
+                btnStartPulseGenerator.IsEnabled = true;
+                btnStopPulseGenerator.IsEnabled = true;
             }
         }
 
@@ -156,24 +149,21 @@ namespace RpiGpioTool
         {
             CancellationToken ct = _cancelationTokenSource.Token;
 
-            Task t = Task.Factory.StartNew(async () => {
-
+            Task t = Task.Factory.StartNew(async () =>
+            {
                 ct.ThrowIfCancellationRequested();
 
                 while (true)
                 {
                     if (ct.IsCancellationRequested)
                     {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { rectangle.Visibility = Visibility.Visible; });
                         ct.ThrowIfCancellationRequested();
                     }
 
-                    //_selectedPin.Write(GpioPinValue.Low);
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { rectangle.Visibility = Visibility.Collapsed; });
+                    _selectedPin.Write(GpioPinValue.Low);
                     await Task.Delay(tLow);
 
-                    //_selectedPin.Write(GpioPinValue.High);
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { rectangle.Visibility = Visibility.Visible; });
+                    _selectedPin.Write(GpioPinValue.High);
                     await Task.Delay(tHigh);
                 }
             }, _cancelationTokenSource.Token);
@@ -202,7 +192,6 @@ namespace RpiGpioTool
                 {
                     tglSwGpioLevel.IsOn = false;
                 }
-
             }
             else
             {
@@ -212,21 +201,11 @@ namespace RpiGpioTool
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            //await InitializeGpio();
+            await InitializeGpio();
             await InitializeUi();
 
             _pulseGeneratorTasks = new List<Task>();
             _cancelationTokenSource = new CancellationTokenSource();
-        }
-
-        private async void btnSwitchDriveMode_Click(object sender, RoutedEventArgs e)
-        {
-            if (_selectedPin != null)
-            {
-                _selectedPin.SetDriveMode(GpioPinDriveMode.Output);
-                _selectedPin.Write(GpioPinValue.Low);
-                await CheckDriveMode();
-            }
         }
 
         private void tglSwGpioLevel_Toggled(object sender, RoutedEventArgs e)
@@ -244,22 +223,35 @@ namespace RpiGpioTool
             }
         }
 
-        private async void tglSwPulseGenerator_Toggled(object sender, RoutedEventArgs e)
+        private async void tglSwDriveMode_Toggled(object sender, RoutedEventArgs e)
         {
-            if (tglSwPulseGenerator.IsOn)
+            if (_selectedPin != null)
+            {
+                if (tglSwDriveMode.IsOn)
+                {
+                    _selectedPin.SetDriveMode(GpioPinDriveMode.Output);
+                }
+                else
+                {
+                    _selectedPin.SetDriveMode(GpioPinDriveMode.Input);
+                }
+
+                await CheckDriveMode();
+            }
+        }
+
+        private void btnStartPulseGenerator_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedPin != null)
             {
                 int low = Int32.Parse(tbxTLow.Text);
                 int high = Int32.Parse(tbxTHigh.Text);
 
                 RunInfinitePulseTask(low, high);
             }
-            else
-            {
-                _cancelationTokenSource.Cancel();
-            }
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void btnStopPulseGenerator_Click(object sender, RoutedEventArgs e)
         {
             _cancelationTokenSource.Cancel();
         }

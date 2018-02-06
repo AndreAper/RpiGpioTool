@@ -8,55 +8,53 @@
     mc:Ignorable="d" Loaded="Page_Loaded">
 
     <Grid Background="#FF191919" RequestedTheme="Dark" Margin="0">
-        <Pivot Title="Raspberry Pi GGPIO Tool">
+        <Pivot Title="Raspberry Pi GPIO Tool">
             <PivotItem Header="Input" FontSize="12">
-                <Grid>
+                <Grid x:Name="tglSwGpioDriveMode">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="43*"/>
-                        <RowDefinition Height="631*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Button Content="Button" HorizontalAlignment="Left" Margin="0,13,0,0" VerticalAlignment="Top" Background="#FF303030" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00A2FF" Height="30" Width="220"/>
-
-                </Grid>
-            </PivotItem>
-            <PivotItem Header="Output">
-                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="177"/>
-                        <ColumnDefinition Width="Auto" MinWidth="215"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto" MinWidth="158"/>
+                        <ColumnDefinition Width="350"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="50*"/>
-                        <RowDefinition Height="167*"/>
-                    </Grid.RowDefinitions>
 
-                    <!--Select GPIO Row-->
-                    <TextBlock Margin="5,6,5,0" Grid.Row="1" TextWrapping="Wrap" Text="Select GPIO" VerticalAlignment="Top" Height="20"/>
-                    <ComboBox x:Name="cbxGpioSelector" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5,6,5,0" Grid.Row="1" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" Height="30" MinWidth="0" SelectionChanged="cbxGpioSelector_SelectionChanged" RequestedTheme="Dark"/>
-                    <Button x:Name="btnSwitchDriveMode" Content="Set output" Grid.Column="2" HorizontalAlignment="Left" Margin="5,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="125" Background="#FF303030" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00A2FF" Height="30" Click="btnSwitchDriveMode_Click"/>
-                    <TextBlock x:Name="tbxDriveModeMsg" Grid.Column="3" HorizontalAlignment="Left" Margin="9,9,0,11" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Foreground="#FFFF0051" Height="20" Grid.Row="1" Width="62"/>
+                    <Canvas Height="30" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF424242" Grid.Row="0">
+                        <TextBlock TextWrapping="Wrap" Text="GPIO Management" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" FontSize="18" Canvas.Left="5" Canvas.Top="5" FontFamily="Segoe UI Light" IsHitTestVisible="False"/>
+                    </Canvas>
 
-                    <!--Output Functions Row-->
-                    <TextBlock Margin="5,5,5,0" Grid.Row="2" Text="Output Functions" VerticalAlignment="Top" Height="20"/>
-                    <ToggleSwitch x:Name="tglSwGpioLevel" Grid.Column="1" Header="GPIO Level" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" Margin="5,5,0,0" OffContent="Low" OnContent="High" RenderTransformOrigin="0.5,0.5" MinWidth="160" Height="60" Width="160" Toggled="tglSwGpioLevel_Toggled"/>
+                    <!--Select GPIO-->
+                    <Canvas Height="50" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="1">
+                        <TextBlock Margin="5,5,0,0" TextWrapping="Wrap" Text="Select GPIO" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
+                        <ComboBox x:Name="cbxGpioSelector" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" Height="30" MinWidth="0" SelectionChanged="cbxGpioSelector_SelectionChanged" RequestedTheme="Dark" Width="115" Background="#00000000" Margin="130,5,0,0"/>
+                    </Canvas>
 
-                    <!--Pulse Generator Row-->
-                    <TextBlock Margin="5,5,5,0" Grid.Row="3" Text="Pulse Generator" VerticalAlignment="Top" Height="20"/>
-                    <TextBox x:Name="tbxTLow" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,5,5,0" InputScope="Number" Header="TLow (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FFFF0051"/>
-                    <TextBox x:Name="tbxTHigh" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,70,5,0" InputScope="Number" Header="THigh (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00FF8B"/>
-                    <Image Grid.Column="2" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="278" Source="Assets/pulse.png" Stretch="None" Grid.ColumnSpan="2"/>
-                    <ToggleSwitch x:Name="tglSwPulseGenerator" Grid.Column="4" Header="Pulse Generator Task" HorizontalAlignment="Left" Margin="5,5,0,0" Grid.Row="3" VerticalAlignment="Top" OffContent="Disabled" OnContent="Enabled" Toggled="tglSwPulseGenerator_Toggled"/>
-                    <Rectangle x:Name="rectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Margin="33,20,0,0" Grid.Row="4" Stroke="Black" VerticalAlignment="Top" Width="100" Grid.RowSpan="2"/>
+                    <!--Change the drive mode of selected gpio pin.-->
+                    <Canvas Height="50" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="2">
+                        <TextBlock Margin="5,5,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Change drive mode" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
+                        <ToggleSwitch x:Name="tglSwDriveMode" Header="" Canvas.Left="130" Canvas.Top="2" OffContent="Input" OnContent="Output" Height="40" Toggled="tglSwDriveMode_Toggled"/>
+                    </Canvas>
 
+                    <!--Change the output level.-->
+                    <Canvas Height="50" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="3">
+                        <TextBlock Margin="5,5,0,0" Grid.Row="2" TextWrapping="Wrap" Text="Level" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
+                        <ToggleSwitch x:Name="tglSwGpioLevel" Grid.Column="1" Header="" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" Margin="0" OffContent="Low" OnContent="High" RenderTransformOrigin="0.5,0.5" MinWidth="160" Height="40" Width="160" Toggled="tglSwGpioLevel_Toggled" Canvas.Left="130" Canvas.Top="2"/>
+                    </Canvas>
+
+                    <!--Create pulse generator-->
+                    <Canvas Height="240" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="4">
+                        <TextBlock Margin="5,5,0,0" TextWrapping="Wrap" Text="Pulse generator" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
+                        <TextBox x:Name="tbxTLow" Grid.Column="1" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="0,5,0,0" InputScope="Number" Header="TLow (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="White" HorizontalAlignment="Left" Canvas.Left="130" Width="100"/>
+                        <TextBox x:Name="tbxTHigh" Grid.Column="1" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" InputScope="Number" Header="THigh (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="White" Canvas.Left="240" Width="100" Canvas.Top="5"/>
+                        <Image Grid.Column="2" HorizontalAlignment="Left" Height="90" Margin="0" Grid.Row="3" VerticalAlignment="Top" Width="209" Source="Assets/pulse.png" Grid.ColumnSpan="2" NineGrid="-2,0,0,0" Canvas.Left="130" Canvas.Top="73"/>
+                        <Button x:Name="btnStartPulseGenerator" Content="Start" Canvas.Left="130" Canvas.Top="200" Width="100" Height="30" VerticalAlignment="Top" Padding="0" BorderBrush="White" BorderThickness="1" Click="btnStartPulseGenerator_Click"/>
+                        <Button x:Name="btnStopPulseGenerator" Content="Stop" Canvas.Left="240" Canvas.Top="200" Width="100" Height="30" VerticalAlignment="Top" Padding="0" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Click="btnStopPulseGenerator_Click"/>
+                    </Canvas>
                 </Grid>
-
             </PivotItem>
             <PivotItem Header="Logs">
                 <ListBox x:Name="lbxLogs" Margin="0"/>

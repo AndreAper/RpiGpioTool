@@ -1,28 +1,221 @@
-﻿    <Grid Background="#FF191919" RequestedTheme="Dark" Margin="0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="177"/>
-            <ColumnDefinition Width="Auto" MinWidth="215"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Raspberry Pi GPIO Tool" FontSize="20" Margin="3,9,0,7" Canvas.ZIndex="1" Height="24" Width="174" VerticalAlignment="Center" FontFamily="Segoe UI Black"/>
-        <Rectangle Fill="#FF1E2546" RequestedTheme="Dark" Grid.ColumnSpan="3"/>
-        <TextBlock Margin="5,10,5,0" Grid.Row="1" TextWrapping="Wrap" Text="Select GPIO" VerticalAlignment="Top" Height="20"/>
-        <ComboBox x:Name="cbxGpioSelector" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5,7,5,5" Grid.Row="1" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" Height="30" MinWidth="0" SelectionChanged="cbxGpioSelector_SelectionChanged" RequestedTheme="Dark"/>
-        <ToggleSwitch x:Name="tglSwGpioLevel" Grid.Column="1" Header="GPIO Level" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Margin="5,5,0,5" OffContent="Low" OnContent="High" RenderTransformOrigin="0.5,0.5" MinWidth="160" Height="60" Width="160"/>
-        <Button x:Name="btnGpioPushSwitch" Content="Push Switch" Grid.Column="2" HorizontalAlignment="Left" Margin="5,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="125" Background="#FF303030" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00A2FF" Height="30" Click="btnGpioPushSwitch_Click"/>
-        <Image Grid.Column="2" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Grid.Row="4" VerticalAlignment="Top" Width="278" Source="Assets/pulse.png" Stretch="None"/>
-        <TextBlock Margin="5,5,5,0" Grid.Row="3" Text="Output Functions" VerticalAlignment="Top" Height="20"/>
-        <TextBlock Margin="5,5,5,0" Grid.Row="4" Text="Pulse Generator" VerticalAlignment="Top" Height="20"/>
-        <TextBox x:Name="tbxTLow" Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,5,5,0" InputScope="Number" Header="TLow (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FFFF0051"/>
-        <TextBox x:Name="tbxTHigh" Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="5,70,5,5" InputScope="Number" Header="THigh (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="#FF00FF8B"/>
-        <TextBlock Margin="5,5,5,0" Grid.Row="2" Text="Input Functions" VerticalAlignment="Top" Height="20"/>
-        <Rectangle Grid.Column="1" Fill="#FFF4F4F5" Height="30" Margin="5" Grid.Row="2" VerticalAlignment="Top"/>
-    </Grid>
+﻿                    <Canvas Height="608" Grid.Row="2" VerticalAlignment="Top" Background="#FF2B2B2B" HorizontalAlignment="Left" Width="551">
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Width="25"/>
+                        <Border BorderBrush="#FFFFAE00" BorderThickness="1" Height="25" Width="75" Canvas.Left="270">
+                            <TextBlock TextWrapping="Wrap" Text="+3,3 V DC" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="1" Canvas.Left="350" Canvas.Top="0" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FFFFAE00" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="2" Canvas.Left="380" Canvas.Top="0" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="Red" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="Red" BorderThickness="1" Height="25" Width="75" Canvas.Left="410">
+                            <TextBlock TextWrapping="Wrap" Text="+5 V DC" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="30" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="30">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 2" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="3" Canvas.Left="350" Canvas.Top="30" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="4" Canvas.Left="380" Canvas.Top="30" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="Red" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="Red" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="30">
+                            <TextBlock TextWrapping="Wrap" Text="+5 V DC" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="30" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="60" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="60">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 3" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="5" Canvas.Left="350" Canvas.Top="60" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="6" Canvas.Left="380" Canvas.Top="60" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="60">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="60" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="90" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="90">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 4" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="7" Canvas.Left="350" Canvas.Top="90" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="8" Canvas.Left="380" Canvas.Top="90" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00FF68" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00FF68" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="90">
+                            <TextBlock TextWrapping="Wrap" Text="UART0 TX" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="90" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="120" Width="25"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="120">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="9" Canvas.Left="350" Canvas.Top="120" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0" IsEnabled="False"/>
+                        <Button Content="10" Canvas.Left="380" Canvas.Top="120" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00FF68" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00FF68" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="120">
+                            <TextBlock TextWrapping="Wrap" Text="UART0 RX" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="120" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="150" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="150">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 17" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="11" Canvas.Left="350" Canvas.Top="150" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="12" Canvas.Left="380" Canvas.Top="150" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="150">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 18" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="150" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="180" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="180">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 27" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="13" Canvas.Left="350" Canvas.Top="180" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="14" Canvas.Left="380" Canvas.Top="180" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0" IsEnabled="False"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="180">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="180" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="210" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="210">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 22" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="15" Canvas.Left="350" Canvas.Top="210" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="16" Canvas.Left="380" Canvas.Top="210" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="210">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 23" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="210" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="240" Width="25"/>
+                        <Border BorderBrush="#FFFFAE00" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="240">
+                            <TextBlock TextWrapping="Wrap" Text="+3,3 V DC" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="17" Canvas.Left="350" Canvas.Top="240" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FFFFAE00" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="18" Canvas.Left="380" Canvas.Top="240" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="240">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 24" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="240" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="270" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="270">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 10" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="19" Canvas.Left="350" Canvas.Top="270" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="20" Canvas.Left="380" Canvas.Top="270" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0" IsEnabled="False"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="270">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="270" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="300" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="300">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 9" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="21" Canvas.Left="350" Canvas.Top="300" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="22" Canvas.Left="380" Canvas.Top="300" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="300">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 25" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="300" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="330" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="330">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 11" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="23" Canvas.Left="350" Canvas.Top="330" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="24" Canvas.Left="380" Canvas.Top="330" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FFFF45DD" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FFFF45DD" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="330">
+                            <TextBlock TextWrapping="Wrap" Text="SPI0 CS0" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="330" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="360" Width="25"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="360">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Border>
+                        <Button Content="25" Canvas.Left="350" Canvas.Top="360" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0" IsEnabled="False"/>
+                        <Button Content="26" Canvas.Left="380" Canvas.Top="360" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FFFF45DD" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FFFF45DD" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="360">
+                            <TextBlock TextWrapping="Wrap" Text="SPI0 CS1" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="360" Width="25"/>
+
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="390" Width="25"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="390">
+                            <TextBlock TextWrapping="Wrap" Text="RESERVED" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF818181"/>
+                        </Border>
+                        <Button Content="27" Canvas.Left="350" Canvas.Top="390" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0" IsEnabled="False"/>
+                        <Button Content="28" Canvas.Left="380" Canvas.Top="390" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FFFF45DD" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0" IsEnabled="False"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="390">
+                            <TextBlock TextWrapping="Wrap" Text="RESERVED" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#FF818181"/>
+                        </Border>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="390" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="420" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="420">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 5" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Button Content="29" Canvas.Left="350" Canvas.Top="420" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="30" Canvas.Left="380" Canvas.Top="420" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FFFF45DD" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0" IsEnabled="False"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="420">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="420" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="450" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="450">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 6" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Button Content="31" Canvas.Left="350" Canvas.Top="450" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="32" Canvas.Left="380" Canvas.Top="450" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="450">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 12" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="450" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="480" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="480">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 13" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Button Content="33" Canvas.Left="350" Canvas.Top="480" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="34" Canvas.Left="380" Canvas.Top="480" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="480">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="480" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="510" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="510">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 19" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Button Content="35" Canvas.Left="350" Canvas.Top="510" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="36" Canvas.Left="380" Canvas.Top="510" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="510">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 16" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="510" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="540" Width="25"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="540">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 26" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Button Content="37" Canvas.Left="350" Canvas.Top="540" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="38" Canvas.Left="380" Canvas.Top="540" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="540">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 20" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="540" Width="25"/>
+
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="240" Canvas.Top="570" Width="25"/>
+                        <Border BorderBrush="#FF818181" BorderThickness="1" Height="25" Width="75" Canvas.Left="270" Canvas.Top="570">
+                            <TextBlock TextWrapping="Wrap" Text="GND" FontSize="10" Margin="5,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Button Content="39" Canvas.Left="350" Canvas.Top="570" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF818181" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Button Content="40" Canvas.Left="380" Canvas.Top="570" BorderThickness="1" Background="{x:Null}" FontSize="12" FontFamily="Consolas" BorderBrush="#FF00D1FF" Width="25" Height="25" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                        <Border BorderBrush="#FF00D1FF" BorderThickness="1" Height="25" Width="75" Canvas.Left="410" Canvas.Top="570">
+                            <TextBlock TextWrapping="Wrap" Text="GPIO 21" FontSize="10" Margin="0,4,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="White"/>
+                        </Border>
+                        <Border BorderBrush="White" BorderThickness="1" Height="25" Canvas.Left="490" Canvas.Top="570" Width="25"/>
+                    </Canvas>
