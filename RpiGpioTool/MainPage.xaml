@@ -6,6 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Loaded="Page_Loaded">
+    <Page.Resources>
+        <Color x:Key="A_Rot">#FFFF003A</Color>
+        <Color x:Key="A_Gelb">#FFD6C519</Color>
+        <Color x:Key="A_Orange">#FFFF8B00</Color>
+        <Color x:Key="A_Hellblau">#FF00D1FF</Color>
+        <Color x:Key="A_Pink">#FFFF00DC</Color>
+        <Color x:Key="A_Gruen">#FF00FF74</Color>
+        <Color x:Key="A_Mittelgrau">#FF747474</Color>
+        <Color x:Key="A_Dunkelgrau">#FF3C3C3C</Color>
+    </Page.Resources>
 
     <Grid Background="#FF191919" RequestedTheme="Dark" Margin="0">
         <Pivot Title="Raspberry Pi GPIO Tool">
@@ -15,44 +25,487 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition/>
+                        <RowDefinition Height="485"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="2"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Canvas Height="30" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF424242" Grid.Row="0">
+                    <Canvas x:Name="cnvsTitleBarGpioMgmt" Height="30" VerticalAlignment="Top" Background="#FF424242" Grid.Row="0" Margin="0,0,0,2">
                         <TextBlock TextWrapping="Wrap" Text="GPIO Management" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" FontSize="18" Canvas.Left="5" Canvas.Top="5" FontFamily="Segoe UI Light" IsHitTestVisible="False"/>
                     </Canvas>
 
                     <!--Select GPIO-->
-                    <Canvas Height="50" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="1">
+                    <Canvas x:Name="cnvsSelectGpio" Height="50" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="1" Margin="0,0,0,2">
                         <TextBlock Margin="5,5,0,0" TextWrapping="Wrap" Text="Select GPIO" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
                         <ComboBox x:Name="cbxGpioSelector" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="White" BorderThickness="1" Height="30" MinWidth="0" SelectionChanged="cbxGpioSelector_SelectionChanged" RequestedTheme="Dark" Width="115" Background="#00000000" Margin="130,5,0,0"/>
                     </Canvas>
 
                     <!--Change the drive mode of selected gpio pin.-->
-                    <Canvas Height="50" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="2">
+                    <Canvas x:Name="cnvsChangeDriveMode" Height="50" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="2" Margin="0,0,0,2">
                         <TextBlock Margin="5,5,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Change drive mode" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
                         <ToggleSwitch x:Name="tglSwDriveMode" Header="" Canvas.Left="130" Canvas.Top="2" OffContent="Input" OnContent="Output" Height="40" Toggled="tglSwDriveMode_Toggled"/>
                     </Canvas>
 
                     <!--Change the output level.-->
-                    <Canvas Height="50" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="3">
+                    <Canvas x:Name="cnvsGetSetPinLevel" Height="50" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="3" Margin="0,0,0,2">
                         <TextBlock Margin="5,5,0,0" Grid.Row="2" TextWrapping="Wrap" Text="Level" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
                         <ToggleSwitch x:Name="tglSwGpioLevel" Grid.Column="1" Header="" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" Margin="0" OffContent="Low" OnContent="High" RenderTransformOrigin="0.5,0.5" MinWidth="160" Height="40" Width="160" Toggled="tglSwGpioLevel_Toggled" Canvas.Left="130" Canvas.Top="2"/>
                     </Canvas>
 
                     <!--Create pulse generator-->
-                    <Canvas Height="240" Margin="0,0,0,2" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="4">
+                    <Canvas x:Name="cnvsPulseGenerator" Height="240" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="4">
                         <TextBlock Margin="5,5,0,0" TextWrapping="Wrap" Text="Pulse generator" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" Width="120"/>
                         <TextBox x:Name="tbxTLow" Grid.Column="1" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" Margin="0,5,0,0" InputScope="Number" Header="TLow (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="White" HorizontalAlignment="Left" Canvas.Left="130" Width="100"/>
                         <TextBox x:Name="tbxTHigh" Grid.Column="1" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Height="60" MinHeight="30" InputScope="Number" Header="THigh (ms)" RequestedTheme="Dark" BorderThickness="1" BorderBrush="White" Canvas.Left="240" Width="100" Canvas.Top="5"/>
                         <Image Grid.Column="2" HorizontalAlignment="Left" Height="90" Margin="0" Grid.Row="3" VerticalAlignment="Top" Width="209" Source="Assets/pulse.png" Grid.ColumnSpan="2" NineGrid="-2,0,0,0" Canvas.Left="130" Canvas.Top="73"/>
                         <Button x:Name="btnStartPulseGenerator" Content="Start" Canvas.Left="130" Canvas.Top="200" Width="100" Height="30" VerticalAlignment="Top" Padding="0" BorderBrush="White" BorderThickness="1" Click="btnStartPulseGenerator_Click"/>
                         <Button x:Name="btnStopPulseGenerator" Content="Stop" Canvas.Left="240" Canvas.Top="200" Width="100" Height="30" VerticalAlignment="Top" Padding="0" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Click="btnStopPulseGenerator_Click"/>
+                    </Canvas>
+
+                    <Canvas x:Name="cnvsTitleBarPinout" Height="30" VerticalAlignment="Top" Background="#FF424242" Grid.Row="0" Grid.Column="2" Width="417" HorizontalAlignment="Left">
+                        <TextBlock TextWrapping="Wrap" Text="GPIO Pinout Overview" VerticalAlignment="Top" Height="30" HorizontalAlignment="Left" Padding="0" FontSize="18" Canvas.Left="5" Canvas.Top="5" FontFamily="Segoe UI Light" IsHitTestVisible="False"/>
+                    </Canvas>
+
+                    <Canvas x:Name="cnvsGpio" VerticalAlignment="Top" Background="#FF2C2C2C" Grid.Row="1" Grid.RowSpan="4" Grid.Column="2" Height="611" Width="417" HorizontalAlignment="Left">
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="11" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Gelb}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="+3,3 V DC" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="11" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="1" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="11" Width="25">
+                            <TextBlock Text="2" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFFF003A" BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="11" Width="80">
+                            <TextBlock Text="+5 V DC" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border BorderThickness="1" Height="20" Canvas.Left="12" Canvas.Top="41" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Hellblau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="I2C1 SDA" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="41" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 2" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="41" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="3" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="41" Width="25">
+                            <TextBlock Text="4" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFFF003A" BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="41" Width="80">
+                            <TextBlock Text="+5 V DC" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border BorderThickness="1" Height="20" Canvas.Left="12" Canvas.Top="71" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Hellblau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="I2C1 SCL" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="71" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 3" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="71" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="5" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="71" Width="25">
+                            <TextBlock Text="6" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="71" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="101" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 4" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="101" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="7" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="101" Width="25">
+                            <TextBlock Text="8" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="101" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Gruen}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="UART0 TX" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="131" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="131" Width="25">
+                            <TextBlock Text="9" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="131" Width="25">
+                            <TextBlock Text="10" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="131" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Gruen}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="UART RX" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="161" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 17" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="161" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="11" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="161" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="12" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="161" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 18" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="191" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 27" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="191" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="13" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="191" Width="25">
+                            <TextBlock Text="14" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="191" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="221" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 22" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="221" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="15" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="221" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="16" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="221" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 23" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="251" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Gelb}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="+ 3,3 V DC" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="251" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="17" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="251" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="18" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="251" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 24" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border BorderThickness="1" Height="20" Canvas.Left="12" Canvas.Top="281" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI0 MOSI" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="281" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 10" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="281" Width="25">
+                            <TextBlock Text="19" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="281" Width="25">
+                            <TextBlock Text="20" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="281" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border BorderThickness="1" Height="20" Canvas.Left="12" Canvas.Top="311" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI0 MISO" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="311" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 9" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="311" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="21" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="311" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="22" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="311" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 25" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border BorderThickness="1" Height="20" Canvas.Left="12" Canvas.Top="341" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI0 SCLK" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="341" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 11" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="341" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="23" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="341" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="24" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="341" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 8" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="327" Canvas.Top="341" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI0 CS0" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="371" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="371" Width="25">
+                            <TextBlock Text="25" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="371" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="26" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="371" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 7" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="327" Canvas.Top="371" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI0 CS1" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="401" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Dunkelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="RESERVED" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{StaticResource A_Dunkelgrau}"/>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="401" Width="25">
+                            <TextBlock Text="27" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="401" Width="25">
+                            <TextBlock Text="28" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="401" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Dunkelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="RESERVED" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{StaticResource A_Dunkelgrau}"/>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="431" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 5" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="431" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="29" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="431" Width="25">
+                            <TextBlock Text="30" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="431" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="461" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 6" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="461" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="31" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="461" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="32" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="461" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 12" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="491" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 13" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="491" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="33" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="491" Width="25">
+                            <TextBlock Text="34" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="491" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border BorderThickness="1" Height="20" Canvas.Left="12" Canvas.Top="521" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI1 MISO" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="521" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 19" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="521" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="35" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="521" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="36" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="521" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 16" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="327" Canvas.Top="521" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI1 CS0" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="551" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 26" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="551" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="37" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="551" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="38" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="551" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 20" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="327" Canvas.Top="551" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI1 MOSI" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="97" Canvas.Top="581" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Mittelgrau}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GND" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="#FFB0B0B0" BorderThickness="1" Height="20" Canvas.Left="182" Canvas.Top="581" Width="25">
+                            <TextBlock Text="39" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="212" Canvas.Top="581" Width="25" BorderBrush="#FFB0B0B0">
+                            <TextBlock Text="40" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="242" Canvas.Top="581" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Orange}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="GPIO 21" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border BorderThickness="1" Height="20" Canvas.Left="327" Canvas.Top="581" Width="80">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{StaticResource A_Pink}"/>
+                            </Border.BorderBrush>
+                            <TextBlock Text="SPI1 SCLK" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
                     </Canvas>
                 </Grid>
             </PivotItem>
