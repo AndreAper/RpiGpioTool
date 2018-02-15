@@ -26,8 +26,15 @@ namespace RpiGpioTool
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private delegate void VisualizePinLevelHandler(int physicalPin);
+        private VisualizePinLevelHandler pinHigh;
+        private VisualizePinLevelHandler pinLow;
+
         private GpioController _gpioController = null;
-        private GpioPin[] _gpioPinList = null;
+
+        //Key = Physical Pin, Value = GPIO Pin
+        private List<KeyValuePair<int, GpioPin>> _pinList;
+
         private GpioPin _selectedPin = null;
         private List<Task> _pulseGeneratorTasks = null;
         private CancellationTokenSource _cancelationTokenSource = null;
@@ -49,44 +56,71 @@ namespace RpiGpioTool
                 lbxLogs.Items.Add("ERROR: GPIO Controller not found.");
             }
 
-            _gpioPinList = new GpioPin[]
+            _pinList = new List<KeyValuePair<int, GpioPin>>()
             {
-                _gpioController.OpenPin(2),
-                _gpioController.OpenPin(3),
-                _gpioController.OpenPin(4),
-                _gpioController.OpenPin(5),
-                _gpioController.OpenPin(6),
-                _gpioController.OpenPin(7),
-                _gpioController.OpenPin(8),
-                _gpioController.OpenPin(9),
-                _gpioController.OpenPin(10),
-                _gpioController.OpenPin(11),
-                _gpioController.OpenPin(12),
-                _gpioController.OpenPin(13),
-                _gpioController.OpenPin(16),
-                _gpioController.OpenPin(17),
-                _gpioController.OpenPin(18),
-                _gpioController.OpenPin(19),
-                _gpioController.OpenPin(20),
-                _gpioController.OpenPin(21),
-                _gpioController.OpenPin(22),
-                _gpioController.OpenPin(23),
-                _gpioController.OpenPin(24),
-                _gpioController.OpenPin(25),
-                _gpioController.OpenPin(26),
-                _gpioController.OpenPin(27)
+                new KeyValuePair<int, GpioPin>(1, null),
+                new KeyValuePair<int, GpioPin>(2, null),
+                new KeyValuePair<int, GpioPin>(3, _gpioController.OpenPin(2)),
+                new KeyValuePair<int, GpioPin>(4, null),
+                new KeyValuePair<int, GpioPin>(5, _gpioController.OpenPin(3)),
+                new KeyValuePair<int, GpioPin>(6, null),
+                new KeyValuePair<int, GpioPin>(7, _gpioController.OpenPin(4)),
+                new KeyValuePair<int, GpioPin>(8, null),
+                new KeyValuePair<int, GpioPin>(9, null),
+                new KeyValuePair<int, GpioPin>(10, null),
+                new KeyValuePair<int, GpioPin>(11, _gpioController.OpenPin(17)),
+                new KeyValuePair<int, GpioPin>(12, _gpioController.OpenPin(18)),
+                new KeyValuePair<int, GpioPin>(13, _gpioController.OpenPin(27)),
+                new KeyValuePair<int, GpioPin>(14, null),
+                new KeyValuePair<int, GpioPin>(15, _gpioController.OpenPin(22)),
+                new KeyValuePair<int, GpioPin>(16, _gpioController.OpenPin(23)),
+                new KeyValuePair<int, GpioPin>(17, null),
+                new KeyValuePair<int, GpioPin>(18, _gpioController.OpenPin(24)),
+                new KeyValuePair<int, GpioPin>(19, _gpioController.OpenPin(10)),
+                new KeyValuePair<int, GpioPin>(20, null),
+                new KeyValuePair<int, GpioPin>(21, _gpioController.OpenPin(9)),
+                new KeyValuePair<int, GpioPin>(22, _gpioController.OpenPin(25)),
+                new KeyValuePair<int, GpioPin>(23, _gpioController.OpenPin(11)),
+                new KeyValuePair<int, GpioPin>(24, _gpioController.OpenPin(8)),
+                new KeyValuePair<int, GpioPin>(25, null),
+                new KeyValuePair<int, GpioPin>(26, _gpioController.OpenPin(7)),
+                new KeyValuePair<int, GpioPin>(27, null),
+                new KeyValuePair<int, GpioPin>(28, null),
+                new KeyValuePair<int, GpioPin>(29, _gpioController.OpenPin(5)),
+                new KeyValuePair<int, GpioPin>(30, null),
+                new KeyValuePair<int, GpioPin>(31, _gpioController.OpenPin(6)),
+                new KeyValuePair<int, GpioPin>(32, _gpioController.OpenPin(12)),
+                new KeyValuePair<int, GpioPin>(33, _gpioController.OpenPin(13)),
+                new KeyValuePair<int, GpioPin>(34, null),
+                new KeyValuePair<int, GpioPin>(35, _gpioController.OpenPin(19)),
+                new KeyValuePair<int, GpioPin>(36, _gpioController.OpenPin(16)),
+                new KeyValuePair<int, GpioPin>(37, _gpioController.OpenPin(26)),
+                new KeyValuePair<int, GpioPin>(38, _gpioController.OpenPin(20)),
+                new KeyValuePair<int, GpioPin>(39, null),
+                new KeyValuePair<int, GpioPin>(40, _gpioController.OpenPin(21))
             };
 
-            foreach (GpioPin pin in _gpioPinList)
+            _pinList.ForEach((pin) =>
             {
-                lbxLogs.Items.Add("GpioPin: "  + pin.PinNumber + " Current drive mode: " + pin.GetDriveMode().ToString() + " Current level: " + pin.Read().ToString());
-            }
-
-            //_currentPin = _gpioController.OpenPin(17);
-            //_currentPin.Write(GpioPinValue.High);
-            //_currentPin.SetDriveMode(GpioPinDriveMode.Output);
+                if (pin.Value != null)
+                {
+                    pin.Value.ValueChanged += PinLevel_ValueChanged;
+                }
+            });
 
             lbxLogs.Items.Add("End initialize GPIO Controller.");
+        }
+
+        private void PinLevel_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
+        {
+            if (sender.Read() == GpioPinValue.High)
+            {
+                pinHigh(_pinList.Single(x => x.Value.PinNumber == sender.PinNumber).Key);
+            }
+            else
+            {
+                pinLow(_pinList.Single(x => x.Value.PinNumber == sender.PinNumber).Key);
+            }
         }
 
         /// <summary>
@@ -96,15 +130,18 @@ namespace RpiGpioTool
         private async Task InitializeUi()
         {
             lbxLogs.Items.Add("Begin initialize UI.");
-            if (_gpioPinList != null)
+            if (_pinList != null)
             {
                 cbxGpioSelector.Items.Clear();
 
-                for (int i = 0; i < _gpioPinList.Length; i++)
+                foreach (KeyValuePair<int, GpioPin> pin in _pinList)
                 {
-                    ComboBoxItem item = new ComboBoxItem();
-                    item.Content = "GPIO " + _gpioPinList[i].PinNumber;
-                    cbxGpioSelector.Items.Add(item);
+                    if (pin.Value != null)
+                    {
+                        ComboBoxItem item = new ComboBoxItem();
+                        item.Content = pin.Value.PinNumber;
+                        cbxGpioSelector.Items.Add(item);
+                    }
                 }
             }
 
@@ -137,6 +174,44 @@ namespace RpiGpioTool
                 btnStartPulseGenerator.IsEnabled = true;
                 btnStopPulseGenerator.IsEnabled = true;
             }
+        }
+
+        private async Task UpdatePinoutOverview()
+        {
+            foreach (KeyValuePair<int, GpioPin> pin in _pinList)
+            {
+                if (pin.Value != null)
+                {
+                    Border b = cnvsGpio.FindName("physicalPin" + pin.Key) as Border;
+
+                    if (pin.Value.GetDriveMode() == GpioPinDriveMode.Input || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullDown || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullUp)
+                    {
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            b.Background = this.Resources["BrushDarkGrey"] as SolidColorBrush;
+                        });
+                    }
+                    else
+                    {
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            b.Background = this.Resources["BrushDeepgrey"] as SolidColorBrush;
+                        });
+                    } 
+                }
+            }
+        }
+
+        private async void VisualizePinHigh(int physicalPin)
+        {
+            Border b = cnvsGpio.FindName("physicalPin" + physicalPin) as Border;
+            b.Background = this.Resources["BrushDarkGrey"] as SolidColorBrush;
+        }
+
+        private async void VisualizePinLow(int physicalPin)
+        {
+            Border b = cnvsGpio.FindName("BrushLightGrey" + physicalPin) as Border;
+            b.Background = this.Resources["BrushDarkGrey"] as SolidColorBrush;
         }
 
         /// <summary>
@@ -179,8 +254,8 @@ namespace RpiGpioTool
             if (cbxGpioSelector.SelectedIndex != -1)
             {
                 ComboBoxItem item = (ComboBoxItem)cbxGpioSelector.SelectedItem;
-                int pinNumber = Int32.Parse(item.Content.ToString().Remove(0, 4));
-                _selectedPin = _gpioPinList.SingleOrDefault(x => x.PinNumber == pinNumber);
+                int pinNumber = Int32.Parse(item.Content.ToString());
+                _selectedPin = _pinList.Single(x => x.Value != null && x.Value.PinNumber == pinNumber).Value;
 
                 await CheckDriveMode();
 
@@ -201,11 +276,15 @@ namespace RpiGpioTool
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            //HACK: Comment out if you want to debug the app on local computer.
             await InitializeGpio();
             await InitializeUi();
 
             _pulseGeneratorTasks = new List<Task>();
             _cancelationTokenSource = new CancellationTokenSource();
+
+            pinHigh = new VisualizePinLevelHandler(VisualizePinHigh);
+            pinLow = new VisualizePinLevelHandler(VisualizePinLow);
         }
 
         private void tglSwGpioLevel_Toggled(object sender, RoutedEventArgs e)
@@ -236,7 +315,14 @@ namespace RpiGpioTool
                     _selectedPin.SetDriveMode(GpioPinDriveMode.Input);
                 }
 
+                UpdatePinoutOverview();
                 await CheckDriveMode();
+                
+
+                if (_selectedPin.Read() == GpioPinValue.High)
+                {
+                    tglSwGpioLevel.IsOn = true;
+                }
             }
         }
 
