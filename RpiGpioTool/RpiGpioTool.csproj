@@ -107,7 +107,14 @@
     <None Include="RpiGpioTool_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Element 42480.png" />
+    <Content Include="Assets\ProjectLogo_HR_IOB_W400.png" />
     <Content Include="Assets\pulse.png" />
+    <Content Include="Assets\SplashScreen_HRIOB.scale-100.png" />
+    <Content Include="Assets\SplashScreen_HRIOB.scale-125.png" />
+    <Content Include="Assets\SplashScreen_HRIOB.scale-150.png" />
+    <Content Include="Assets\SplashScreen_HRIOB.scale-200.png" />
+    <Content Include="Assets\SplashScreen_HRIOB.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

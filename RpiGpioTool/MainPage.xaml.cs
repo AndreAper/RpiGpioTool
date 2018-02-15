@@ -16,27 +16,46 @@ using Windows.Devices.Gpio;
 using System.Threading.Tasks;
 using System.Threading;
 using Windows.UI.Core;
-
-// Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x407 dokumentiert.
+using Windows.System.Threading;
 
 namespace RpiGpioTool
 {
-    /// <summary>
-    /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
+        /// <summary>
+        /// A Delegate type to change status of an physical pin by changing the back color of the canvas.
+        /// </summary>
+        /// <param name="physicalPin">The physical ping of the gpio port on the raspberry pi.</param>
         private delegate void VisualizePinLevelHandler(int physicalPin);
-        private VisualizePinLevelHandler pinHigh;
-        private VisualizePinLevelHandler pinLow;
 
+        /// <summary>
+        /// A instance of a <see cref="VisualizePinLevelHandler"/> Delegate to showing the high status of an physical pin by light grey back color of the canvas. 
+        /// </summary>
+        private VisualizePinLevelHandler pinHigh = null;
+
+        /// <summary>
+        /// A instance of a <see cref="VisualizePinLevelHandler"/> Delegate to showing the low status of an physical pin by deep grey back color of the canvas. 
+        /// </summary>
+        private VisualizePinLevelHandler pinLow = null;
+
+        /// <summary>
+        /// A instance of gpio controller of the raspberry pi.
+        /// </summary>
         private GpioController _gpioController = null;
 
-        //Key = Physical Pin, Value = GPIO Pin
-        private List<KeyValuePair<int, GpioPin>> _pinList;
+        /// <summary>
+        /// A list that contains all gpio pins and their respective physical pin numbers.
+        /// </summary>
+        private List<KeyValuePair<int, GpioPin>> _pinList; //Key = Physical Pin, Value = GPIO Pin
 
+        /// <summary>
+        /// A field to store the instance of selected gpio pin.
+        /// </summary>
         private GpioPin _selectedPin = null;
-        private List<Task> _pulseGeneratorTasks = null;
+
+        /// <summary>
+        /// A <see cref="CancellationTokenSource"/> instance to stop the pulse generator.
+        /// </summary>
         private CancellationTokenSource _cancelationTokenSource = null;
 
         /// <summary>
@@ -111,15 +130,20 @@ namespace RpiGpioTool
             lbxLogs.Items.Add("End initialize GPIO Controller.");
         }
 
+        /// <summary>
+        /// Triggered if the value of the gpio pin has changed.
+        /// </summary>
+        /// <param name="sender">The gpio pin that has triggered the event.</param>
+        /// <param name="args"></param>
         private void PinLevel_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
             if (sender.Read() == GpioPinValue.High)
             {
-                pinHigh(_pinList.Single(x => x.Value.PinNumber == sender.PinNumber).Key);
+                pinHigh(_pinList.Single(x => x.Value != null && x.Value.PinNumber == sender.PinNumber).Key);
             }
             else
             {
-                pinLow(_pinList.Single(x => x.Value.PinNumber == sender.PinNumber).Key);
+                pinLow(_pinList.Single(x => x.Value != null && x.Value.PinNumber == sender.PinNumber).Key);
             }
         }
 
@@ -172,46 +196,34 @@ namespace RpiGpioTool
                 tbxTLow.IsEnabled = true;
                 tbxTHigh.IsEnabled = true;
                 btnStartPulseGenerator.IsEnabled = true;
-                btnStopPulseGenerator.IsEnabled = true;
             }
         }
 
-        private async Task UpdatePinoutOverview()
-        {
-            foreach (KeyValuePair<int, GpioPin> pin in _pinList)
-            {
-                if (pin.Value != null)
-                {
-                    Border b = cnvsGpio.FindName("physicalPin" + pin.Key) as Border;
-
-                    if (pin.Value.GetDriveMode() == GpioPinDriveMode.Input || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullDown || _selectedPin.GetDriveMode() == GpioPinDriveMode.InputPullUp)
-                    {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            b.Background = this.Resources["BrushDarkGrey"] as SolidColorBrush;
-                        });
-                    }
-                    else
-                    {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            b.Background = this.Resources["BrushDeepgrey"] as SolidColorBrush;
-                        });
-                    } 
-                }
-            }
-        }
-
+        /// <summary>
+        /// Showing the high status of an physical pin by light grey back color of the canvas.
+        /// </summary>
+        /// <param name="physicalPin">The number of physical pin to change the back color.</param>
         private async void VisualizePinHigh(int physicalPin)
         {
-            Border b = cnvsGpio.FindName("physicalPin" + physicalPin) as Border;
-            b.Background = this.Resources["BrushDarkGrey"] as SolidColorBrush;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Border b = cnvsGpio.FindName("physicalPin" + physicalPin) as Border;
+                b.Background = this.Resources["BrushLightGrey"] as SolidColorBrush;
+            });
         }
 
+        /// <summary>
+        /// Showing the low status of an physical pin by deep grey back color of the canvas.
+        /// </summary>
+        /// <param name="physicalPin">The number of physical pin to change the back color.</param>
         private async void VisualizePinLow(int physicalPin)
         {
-            Border b = cnvsGpio.FindName("BrushLightGrey" + physicalPin) as Border;
-            b.Background = this.Resources["BrushDarkGrey"] as SolidColorBrush;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Border b = cnvsGpio.FindName("physicalPin" + physicalPin) as Border;
+                b.Background = this.Resources["BrushDeepGrey"] as SolidColorBrush;
+            });
+
         }
 
         /// <summary>
@@ -222,33 +234,40 @@ namespace RpiGpioTool
         /// <returns></returns>
         private async Task RunInfinitePulseTask(int tLow, int tHigh)
         {
-            CancellationToken ct = _cancelationTokenSource.Token;
+            _cancelationTokenSource = new CancellationTokenSource();
 
             Task t = Task.Factory.StartNew(async () =>
             {
+                CancellationToken ct = _cancelationTokenSource.Token;
                 ct.ThrowIfCancellationRequested();
 
-                while (true)
+                while (ct.IsCancellationRequested == false)
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
-
                     _selectedPin.Write(GpioPinValue.Low);
                     await Task.Delay(tLow);
 
                     _selectedPin.Write(GpioPinValue.High);
                     await Task.Delay(tHigh);
                 }
+
+                t = null;
+
             }, _cancelationTokenSource.Token);
         }
 
+        /// <summary>
+        /// Main page constructor that initialize the ui components.
+        /// </summary>
         public MainPage()
         {
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Triggered if the selected index has changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void cbxGpioSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cbxGpioSelector.SelectedIndex != -1)
@@ -271,22 +290,43 @@ namespace RpiGpioTool
             else
             {
                 _selectedPin = null;
+
+                btnStartPulseGenerator.IsEnabled = false;
+                btnStopPulseGenerator.IsEnabled = false;
+                tglSwDriveMode.IsEnabled = false;
+                tglSwGpioLevel.IsEnabled = false;
+                tbxTLow.IsEnabled = false;
+                tbxTHigh.IsEnabled = false;
             }
         }
 
+        /// <summary>
+        /// Initialize gpio and ui and create some instances.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             //HACK: Comment out if you want to debug the app on local computer.
             await InitializeGpio();
             await InitializeUi();
 
-            _pulseGeneratorTasks = new List<Task>();
-            _cancelationTokenSource = new CancellationTokenSource();
+            cbxGpioSelector.SelectedIndex = -1;
 
             pinHigh = new VisualizePinLevelHandler(VisualizePinHigh);
             pinLow = new VisualizePinLevelHandler(VisualizePinLow);
+
+            foreach (GpioPin pin in _pinList.Where(x => x.Value != null).Select(x => x.Value))
+            {
+                lbxLogs.Items.Add("GPIO" + pin.PinNumber + " Drive Mode: " + pin.GetDriveMode().ToString());
+            }
         }
 
+        /// <summary>
+        /// Triggered to change the level of gpio pin value.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tglSwGpioLevel_Toggled(object sender, RoutedEventArgs e)
         {
             if (_selectedPin != null)
@@ -302,6 +342,11 @@ namespace RpiGpioTool
             }
         }
 
+        /// <summary>
+        /// Triggered to change the drive mode of a gpio pin
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void tglSwDriveMode_Toggled(object sender, RoutedEventArgs e)
         {
             if (_selectedPin != null)
@@ -315,10 +360,9 @@ namespace RpiGpioTool
                     _selectedPin.SetDriveMode(GpioPinDriveMode.Input);
                 }
 
-                UpdatePinoutOverview();
+                //UpdatePinoutOverview();
                 await CheckDriveMode();
                 
-
                 if (_selectedPin.Read() == GpioPinValue.High)
                 {
                     tglSwGpioLevel.IsOn = true;
@@ -326,6 +370,11 @@ namespace RpiGpioTool
             }
         }
 
+        /// <summary>
+        /// Starts the infinite puls generator of selected gpio pin.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnStartPulseGenerator_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedPin != null)
@@ -333,13 +382,43 @@ namespace RpiGpioTool
                 int low = Int32.Parse(tbxTLow.Text);
                 int high = Int32.Parse(tbxTHigh.Text);
 
+                btnStartPulseGenerator.IsEnabled = false;
+                btnStopPulseGenerator.IsEnabled = true;
+                cbxGpioSelector.IsEnabled = false;
+                tglSwDriveMode.IsEnabled = false;
+                tglSwGpioLevel.IsEnabled = false;
+                tbxTLow.IsEnabled = false;
+                tbxTHigh.IsEnabled = false;
+
                 RunInfinitePulseTask(low, high);
             }
         }
 
+        /// <summary>
+        /// Stops the infinite puls generator of selected gpio pin.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnStopPulseGenerator_Click(object sender, RoutedEventArgs e)
         {
             _cancelationTokenSource.Cancel();
+
+            btnStartPulseGenerator.IsEnabled = true;
+            btnStopPulseGenerator.IsEnabled = false;
+            cbxGpioSelector.IsEnabled = true;
+            tglSwDriveMode.IsEnabled = true;
+            tglSwGpioLevel.IsEnabled = true;
+            tbxTLow.IsEnabled = true;
+            tbxTHigh.IsEnabled = true;
+
+            if (_selectedPin.Read() == GpioPinValue.High)
+            {
+                tglSwGpioLevel.IsOn = true;
+            }
+            else
+            {
+                tglSwGpioLevel.IsOn = false;
+            }
         }
     }
 }
